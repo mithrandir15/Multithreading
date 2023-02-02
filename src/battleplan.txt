@@ -1,0 +1,31 @@
+-Province
+    - List of Pops
+    - List of Industries
+    - Local Gov't
+
+Economic Unit (called... an agent?)
+    - $$ in bank
+    - Resources wanted
+    - Emergency fund
+    - Resources produced (for an individual, it's labor)
+
+If an agent can make a profit from trading (cost of moving resources + cost of trader < arbitrage) it does so.
+A # of random pops consider trading between their province and another one
+    (random, weighted by low distance and high pops).
+
+ACTUALLY, trade routes need only originate from nodes with high pops. (Trade centers!)
+AND, you could have multi-legged trade routes (trade from small province to big province, then between regions, then from big to small)
+OUTGOING TRADE ROUTE LENGTH IS PROPORTIONAL TO HOME NODE POPS.
+
+Actually, trade route length should be proportional to the lesser population of the two end cities.
+That way, large cities don't trade directly with tiny villages halfway across the globe.
+
+Truthfully, the deciding factor over whether a trade route is started isn't population, it's trading infrastructure,
+which is itself a result of profitability. Rural mines and rural factories should be able to trade.
+It's complicated, and I'm sure any economist will tell you that it's complicated.
+But population is a good initial proxy.
+
+List of Routes - each route is a list of ProvinceConnections...
+
+Each turn:
+    Each agent puts its resources on the local market
