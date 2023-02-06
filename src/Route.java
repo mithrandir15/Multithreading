@@ -1,22 +1,22 @@
 import java.util.LinkedList;
 
 public class Route {
-    LinkedList<ProvinceConnection> connections;
+    LinkedList<Province> provinces;
     int totalCost;
 
     public Route() {
-        this.connections = new LinkedList<>();
+        this.provinces = new LinkedList<>();
         this.totalCost = 0;
     }
 
     public Route(Route other) {
-        this.connections = new LinkedList<>(other.connections);
+        this.provinces = new LinkedList<>(other.provinces);
         this.totalCost = other.totalCost;
     }
 
-    public Route addConnection(ProvinceConnection provinceConnection) {
-        connections.add(provinceConnection);
-        totalCost += provinceConnection.travelCost;
+    public Route addConnection(Province province) {
+        provinces.add(province);
+        totalCost += 1; //TODO: replace with better heuristic
         return this;
     }
 }

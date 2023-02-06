@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class Province {
 
     String name;
-    ArrayList<ProvinceConnection> provinceConnections;
+    ArrayList<Province> provinceConnections;
     int numPops;
 
     public Province(String name, int numPops) {
@@ -12,7 +12,7 @@ public class Province {
         provinceConnections = new ArrayList<>();
     }
 
-    public void addProvinceConnection(ProvinceConnection p) {
+    public void addProvinceConnection(Province p) {
         this.provinceConnections.add(p);
     }
 }

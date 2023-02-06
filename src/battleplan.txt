@@ -29,3 +29,7 @@ List of Routes - each route is a list of ProvinceConnections...
 
 Each turn:
     Each agent puts its resources on the local market
+
+Refactor:
+    Province connection class doesn't need to exist. Instead, travel cost can be calculated from x/y position
+    and from the terrain types of the two provinces. It may take up more space, but it'll be faster and simpler.

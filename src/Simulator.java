@@ -34,10 +34,8 @@ public class Simulator {
             int p1index = provinceNameToIndex.get(p1name);
             String p2name = provinceConnectionArgs[1].strip();
             int p2index = provinceNameToIndex.get(p2name);
-            int connectionCost = Integer.parseInt(provinceConnectionArgs[2].strip());
-            ProvinceConnection pc = new ProvinceConnection(provinceArr[p1index], provinceArr[p2index], connectionCost);
-            provinceArr[p1index].addProvinceConnection(pc);
-            provinceArr[p2index].addProvinceConnection(pc);
+            provinceArr[p1index].addProvinceConnection(provinceArr[p2index]);
+            provinceArr[p2index].addProvinceConnection(provinceArr[p1index]);
         }
 
         SmallWorld smallWorld = new SmallWorld(provinceArr);

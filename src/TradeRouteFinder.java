@@ -5,7 +5,8 @@ public class TradeRouteFinder extends Thread {
     public Route bestRoute;
 
     private HashMap<Province, Route> bestRoutes;
-    private LinkedList<ProvinceConnection> currentConnections;
+    private HashSet<Province> seenProvinces;
+    private LinkedList<Province> unseenProvinces;
 
     public TradeRouteFinder(Province startingProvince) {
         this.startingProvince = startingProvince;
@@ -15,50 +16,52 @@ public class TradeRouteFinder extends Thread {
         dijkstra();
     }
 
-    private void addBestRoute(Province fromProvince, Province toProvince, ProvinceConnection pc) {
+    private void addBestRoute(Province fromProvince, Province toProvince) {
         Route route;
         if (fromProvince == startingProvince) {
-            route = new Route().addConnection(pc);
+            route = new Route().addConnection(fromProvince).addConnection(toProvince);
         }
         else {
-            route = new Route(bestRoutes.get(fromProvince)).addConnection(pc);
+            route = new Route(bestRoutes.get(fromProvince)).addConnection(toProvince);
         }
         if (toProvince != startingProvince) {
             bestRoutes.put(toProvince, route);
-            currentConnections.addAll(toProvince.provinceConnections);
+            if (! seenProvinces.contains(toProvince)) {
+                unseenProvinces.add(toProvince);
+            }
         }
     }
 
-    private void replaceBestRoute(Province fromProvince, Province toProvince, ProvinceConnection pc) {
-        bestRoutes.replace(toProvince, new Route(bestRoutes.get(fromProvince).addConnection(pc)));
+    private void replaceBestRoute(Province fromProvince, Province toProvince) {
+        bestRoutes.replace(toProvince, new Route(bestRoutes.get(fromProvince).addConnection(toProvince)));
     }
 
     private void dijkstra() {
         bestRoutes = new HashMap<>();
-        currentConnections = new LinkedList<>(startingProvince.provinceConnections);
-        while (!currentConnections.isEmpty()) {
-            ProvinceConnection pc = currentConnections.pop();
-            Province startingProvinceCounterpart = pc.getOtherProvince(startingProvince);
-            if (startingProvinceCounterpart != null && ! bestRoutes.containsKey(startingProvinceCounterpart)) {
-                addBestRoute(startingProvince, pc.getOtherProvince(startingProvince), pc);
-            }
+        seenProvinces = new HashSet<>();
+        seenProvinces.add(startingProvince);
+        unseenProvinces = new LinkedList<>(); // "Unseen" already has a best route defined
+        unseenProvinces.add(startingProvince);
 
-            else if (bestRoutes.containsKey(pc.p1)) {
-                if (bestRoutes.containsKey(pc.p2)) {
-                    int costDifference = bestRoutes.get(pc.p1).totalCost - bestRoutes.get(pc.p2).totalCost;
-                    if (costDifference > pc.travelCost) {
-                        replaceBestRoute(pc.p2, pc.p1, pc);
+        while (!unseenProvinces.isEmpty()) {
+            Province curr = unseenProvinces.pop();
+            seenProvinces.add(curr);
+            for (Province connectingProvince : curr.provinceConnections) {
+                if (connectingProvince == this.startingProvince) {
+                    continue;
+                }
+                if (bestRoutes.containsKey(connectingProvince)) {
+                    int costDifference = bestRoutes.get(connectingProvince).totalCost - bestRoutes.get(curr).totalCost;
+                    if (costDifference > 1) {
+                        replaceBestRoute(connectingProvince, curr);
                     }
-                    else if (costDifference * -1 > pc.travelCost) {
-                        replaceBestRoute(pc.p1, pc.p2, pc);
+                    else if (costDifference * -1 > 1) {
+                        replaceBestRoute(curr, connectingProvince);
                     }
                 }
                 else {
-                    addBestRoute(pc.p1, pc.p2, pc);
+                    addBestRoute(curr, connectingProvince);
                 }
-            }
-            else if (bestRoutes.containsKey(pc.p2)) {
-                addBestRoute(pc.p2, pc.p1, pc);
             }
         }
         bestRoute = null;
